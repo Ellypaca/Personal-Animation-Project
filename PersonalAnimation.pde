@@ -37,14 +37,24 @@ float green6bx, green6by, green6bw, green6bh, greenln6b; //second green note in 
 
 float doublelinex1, doublelinex2, doubleliney; //line connect the double-notes
 
-int likex, likey; 
-int animesenx, animeseny; 
-int animehqx, animehqy;
-int animebandx, animebandy;
-int pokemonx, pokemony;
+/*int likex, likey; 
+ int animesenx, animeseny; 
+ int animehqx, animehqy;
+ int animebandx, animebandy;
+ int pokemonx, pokemony;*/
 
+float laner, laneg, laneb, lanea; //these are the order of the colors to make the shadow in the lanes (r, g, b, a) respecively
+
+Random speakercolorr = new Random(); //variable for the speaker's r value
+Random speakercolorg = new Random(); //variable for the speaker's g value
+Random speakercolorb = new Random(); //variable for the speaker's b value
+
+int speakerr, speakerg, speakerb; //base color of speakers
+
+int counter; //framecounter but for audience 
 
 int framecounter; //counts the amount of frames
+
 
 Minim minim;
 AudioPlayer BandoriTap; //tap sound effect
@@ -147,24 +157,21 @@ void setup() {
   doublelinex2 = 453.32; //x2 for line connecting double notes 
   doubleliney = -2.5; //the y position for the line connecting double notes
 
-  likex = -120;
 
-  animesenx = -800; //senko
-  animeseny= (rand.nextInt(560));
+  laner = 63;
+  laneg = 64;
+  laneb = 67;
+  lanea = 140;
 
-  animehqx = -900; //haikyuu
-  animehqy = (rand.nextInt(560));
+  speakerr = 82;
+  speakerg = 193; 
+  speakerb = 232;
 
-  animebandx = -700; //bandori
-  animebandy = (rand.nextInt(560));
 
-  pokemonx = -1000;
-  pokemony = (rand.nextInt(560));
-  
   minim = new Minim(this);
   BandoriTap = minim.loadFile("BandoriTap.mp3"); //FROM THE VIDEO GAME BANG DREAM
 
-  YuraYura = minim.loadFile("YuraYura.mp3"); //FROM THE VIDEO GAME BANG DREAM
+  YuraYura = minim.loadFile("YuraYura.mp3"); //THIS IS THE SONG YURA YURA RING DONG DANCE FROM THE VIDEO GAME BANG DREAM
 
   GreenNote = minim.loadFile("GreenNote.mp3"); //FROM THE VIDEO GAME BANG DREAM
 }
@@ -176,6 +183,19 @@ void setup() {
 //ANIMATION======================================================
 void draw() { 
   background(#1F2850);
+
+  //stage 
+  stroke(211, 176, 98);
+  strokeWeight(1);
+  fill(211, 176, 98);
+  quad(150, 150, 650, 150, 750, 300, 50, 300);
+
+  audience(); //draws audience 
+
+  speaker(); //draws the speaker and its changing lights 
+
+
+
 
   stroke(#B9FFFB);
   strokeWeight(5);
@@ -195,6 +215,12 @@ void draw() {
   //26.66 in between
   //41.665
   //13.33
+
+
+  //SHADOW ON LANES
+  fill(laner, laneg, laneb, lanea);
+  quad(306.67, 0, 493.33, 0, 691.665, 500, 108.335, 500);
+
 
   //bar1(); //UNUSED IN THIS SONG
 
@@ -256,17 +282,6 @@ void draw() {
 
 
 
-  if (framecounter>1070 && framecounter<1500){
-  like();
-
-  }
-
-  if (framecounter>1250){
-  animesen();
-  animehq();
-  animeband();
-  pokemon();
-  }
 
 
 
@@ -779,59 +794,85 @@ void doubleline() { //line connecting double notes
 
 
 
-void like() {
-  textSize(80);
-  textAlign(CENTER, CENTER);
-  fill(#FFAF4D);
-  text("THINGS I LIKE", likex, 350);
-  if (likex<1200) {
-    likex=likex+5;
+void speaker() {  
+  //body
+  stroke(0);
+  strokeWeight(1);
+  fill(57);
+  quad(35, 140, 110, 115, 133, 285, 55, 315);
+  fill(10);
+  quad(2, 118, 35, 140, 56, 314, 20, 283);
+  fill(36);
+  quad(2, 118, 70, 95, 110, 115, 35, 140);
+  line(45, 229, 121, 200);
+  line(11, 200, 45, 229);
+  //color changing circles
+  if (speakerr<255) {
+    speakerr=speakerr + speakercolorr.nextInt(6);
+  } else {
+    speakerr=0;
+  }
+
+  if (speakerg<255) {
+    speakerg=speakerg + speakercolorg.nextInt(6);
+    ;
+  } else {
+    speakerg=0;
+  }
+
+  if (speakerb<255) {
+    speakerb=speakerb + speakercolorb.nextInt(6);
+  } else {
+    speakerb=0;
+  }
+
+  fill(speakerr, speakerg, speakerb);
+  ellipse(80, 174, 50, 50);
+  fill(speakerb, speakerr, speakerg);
+  ellipse(90, 260, 50, 50);
+  fill(57);
+  ellipse(80, 174, 25, 25);
+  ellipse(90, 260, 25, 25);
+}
+
+void audience() {
+  strokeWeight(10);
+
+  counter = counter + 1;
+
+  if (counter<30) {
+    stroke(#1F2850);
+    fill(#1F2850);
+  }
+  if (counter>30) {
+    stroke(255, 255, 255, 150);
+    fill(255);
+
+    //the audience in no particular order
+    ellipse(20, 400, 20, 40);
+    ellipse(120, 560, 20, 40);
+    ellipse(220, 490, 20, 40);
+    ellipse(320, 420, 20, 40);
+    ellipse(420, 390, 20, 40);
+    ellipse(520, 460, 20, 40);
+    ellipse(620, 400, 20, 40);
+    ellipse(720, 480, 20, 40);
+    ellipse(10, 500, 20, 40);
+    ellipse(70, 520, 20, 40);
+    ellipse(170, 470, 20, 40);
+    ellipse(270, 490, 20, 40);
+    ellipse(370, 570, 20, 40);
+    ellipse(470, 560, 20, 40);
+    ellipse(570, 500, 20, 40);
+    ellipse(670, 520, 20, 40);
+    ellipse(770, 500, 20, 40);
+  }
+  
+  if (counter == 100) {
+    counter = 0;
   }
 }
 
-void animesen() {
-  textSize(60);
-  textAlign(LEFT, CENTER);
-  fill(#F7D64D);
-  text("Senko-san", animesenx, animeseny);
-  if (animesenx<1000) {
-    animesenx=animesenx+5;
-  }
-}
-
-
-void animehq() {
-  textSize(60);
-  textAlign(LEFT, CENTER);
-  fill(#000000);
-  text("Haikyuu", animehqx, animehqy);
-  if (animehqx<1000) {
-    animehqx=animehqx+5;
-  }
-}
-
-void animeband() {
-  textSize(60);
-  textAlign(LEFT, CENTER);
-  fill(284, 0, 67);
-  text("Bandori", animebandx, animebandy);
-  if (animebandx<1000) {
-    animebandx=animebandx+5;
-  }
-}
-
-void pokemon() {
-  textSize(60);
-  textAlign(LEFT, CENTER);
-  fill(#FF381A);
-  text("Pokemon", pokemonx, pokemony);
-  if (pokemonx<1000) {
-    pokemonx=pokemonx+5;
-  }
-}
-
-
- 
 
 
 //END FUNCTIONS===============================================================
